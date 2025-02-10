@@ -1,10 +1,9 @@
-
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { ArrowDown, Briefcase, Users, HandHeart, Temple, Sparkles } from "lucide-react";
+import { ArrowDown, Briefcase, Users, HandHeart, Building2, Sparkles } from "lucide-react";
 
 interface FeaturedJob {
   id: number;
@@ -152,7 +151,7 @@ const Index = () => {
         {/* Values Section */}
         <section className="mt-32 text-center">
           <div className="max-w-3xl mx-auto">
-            <Temple className="w-12 h-12 mx-auto text-accent mb-6" />
+            <Building2 className="w-12 h-12 mx-auto text-accent mb-6" />
             <h2 className="text-3xl font-bold text-primary mb-6">Our Community Values</h2>
             <div className="grid md:grid-cols-2 gap-8 mt-12">
               {[
@@ -235,4 +234,3 @@ const Index = () => {
 };
 
 export default Index;
-
