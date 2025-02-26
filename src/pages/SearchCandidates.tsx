@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { format } from "date-fns";
 import { Header } from "@/components/Header";
 import { CandidateCard } from "@/components/candidates/CandidateCard";
 import { SearchFilters } from "@/components/candidates/SearchFilters";
