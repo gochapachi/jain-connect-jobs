@@ -1,9 +1,10 @@
+
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { ArrowDown, Briefcase, Users, HandHeart, Building2, Sparkles } from "lucide-react";
+import { ArrowDown, Briefcase, Users, HandHeart, Building2, Sparkles, GraduationCap, Leaf, Calendar, HeartPulse } from "lucide-react";
 
 interface FeaturedJob {
   id: number;
@@ -12,6 +13,8 @@ interface FeaturedJob {
   location: string;
   description: string;
   requirements: string[];
+  jainFriendlyPolicies: string[];
+  industry: string;
 }
 
 const FEATURED_JOBS: FeaturedJob[] = [
@@ -20,25 +23,38 @@ const FEATURED_JOBS: FeaturedJob[] = [
     title: "Business Analyst",
     company: "Jain Tech Solutions",
     location: "Mumbai, India",
-    description: "Join our growing team to help analyze and improve business processes...",
-    requirements: ["3+ years experience", "Strong analytical skills", "Knowledge of Jain business ethics"]
+    description: "Join our growing team to help analyze and improve business processes while working in an environment that respects and supports Jain values.",
+    requirements: ["3+ years experience", "Strong analytical skills", "Knowledge of Jain business ethics"],
+    jainFriendlyPolicies: ["Flexible hours during Paryushan", "100% vegetarian workplace", "Meditation room"],
+    industry: "Technology"
   },
   {
     id: 2,
     title: "Community Manager",
     company: "Ahimsa Foundation",
     location: "Delhi, India",
-    description: "Help build and nurture our growing Jain professional network...",
-    requirements: ["2+ years in community management", "Strong communication skills", "Understanding of Jain values"]
+    description: "Help build and nurture our growing Jain professional network with focus on ethical community engagement.",
+    requirements: ["2+ years in community management", "Strong communication skills", "Understanding of Jain values"],
+    jainFriendlyPolicies: ["Work from home during festivals", "Vegan catering", "Community service days"],
+    industry: "Non-profit"
   },
   {
     id: 3,
     title: "Financial Advisor",
     company: "Dharma Investments",
     location: "Bangalore, India",
-    description: "Guide clients in making ethical investment decisions aligned with Jain principles...",
-    requirements: ["5+ years in financial planning", "CFA certification", "Knowledge of ethical investing"]
+    description: "Guide clients in making ethical investment decisions aligned with Jain principles of non-violence and sustainability.",
+    requirements: ["5+ years in financial planning", "CFA certification", "Knowledge of ethical investing"],
+    jainFriendlyPolicies: ["Ethical investment focus", "Festival holidays", "Flexible working hours"],
+    industry: "Finance"
   }
+];
+
+const INDUSTRIES = [
+  { icon: <Leaf className="w-6 h-6" />, name: "Vegan/Vegetarian", description: "Food and lifestyle businesses" },
+  { icon: <GraduationCap className="w-6 h-6" />, name: "Education", description: "Teaching and learning" },
+  { icon: <HeartPulse className="w-6 h-6" />, name: "Healthcare", description: "Medical and wellness" },
+  { icon: <Building2 className="w-6 h-6" />, name: "Ethical Business", description: "Sustainable enterprises" }
 ];
 
 const Index = () => {
@@ -82,38 +98,25 @@ const Index = () => {
           <ArrowDown className="text-accent w-8 h-8" />
         </div>
         
-        {/* Features Section */}
-        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: <Briefcase />,
-              title: "Find Opportunities",
-              description: "Browse through job listings posted by members of the Jain community.",
-            },
-            {
-              icon: <Users />,
-              title: "Post Jobs",
-              description: "Share job opportunities with qualified candidates from our community.",
-            },
-            {
-              icon: <HandHeart />,
-              title: "Support the Community",
-              description: "Contribute to our initiatives through donations and create positive impact.",
-            },
-          ].map((feature, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-in group cursor-pointer"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <div className="text-accent mb-4 group-hover:scale-110 transition-transform">
-                {feature.icon}
+        {/* Industries Section */}
+        <section className="mt-24">
+          <h2 className="text-3xl font-bold text-primary mb-8 text-center">Industries Aligned with Jain Values</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {INDUSTRIES.map((industry, index) => (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group cursor-pointer animate-slide-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="text-accent mb-4 group-hover:scale-110 transition-transform">
+                  {industry.icon}
+                </div>
+                <h3 className="text-lg font-semibold text-primary mb-2">{industry.name}</h3>
+                <p className="text-gray-600 text-sm">{industry.description}</p>
               </div>
-              <h3 className="text-xl font-semibold text-primary mb-3">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
 
         {/* Featured Jobs Section */}
         <section className="mt-32">
@@ -130,19 +133,71 @@ const Index = () => {
                   setSelectedJob(job);
                   setShowJobDialog(true);
                 }}
-                className="bg-white p-6 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer animate-slide-in"
+                className="bg-white p-6 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer animate-slide-in group"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="text-xl font-semibold text-primary mb-2">{job.title}</h3>
+                    <h3 className="text-xl font-semibold text-primary mb-2 group-hover:text-accent transition-colors">{job.title}</h3>
                     <p className="text-gray-600">{job.company}</p>
                     <p className="text-gray-500 text-sm mt-2">{job.location}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {job.jainFriendlyPolicies.slice(0, 2).map((policy, idx) => (
+                        <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/10 text-accent">
+                          {policy}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <Button variant="outline" className="hover:scale-105 transition-transform">
+                  <Button variant="outline" className="group-hover:bg-accent group-hover:text-white transition-colors">
                     View Details
                   </Button>
                 </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Community Board Section */}
+        <section className="mt-32">
+          <div className="text-center mb-12">
+            <Calendar className="w-12 h-12 mx-auto text-accent mb-6" />
+            <h2 className="text-3xl font-bold text-primary mb-4">Community Events</h2>
+            <p className="text-gray-600 mb-8">Connect, learn, and grow with the Jain professional community</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                title: "Career Workshop",
+                date: "March 15, 2024",
+                description: "Join us for a special career development workshop during Paryushan.",
+                type: "Workshop"
+              },
+              {
+                title: "Networking Mixer",
+                date: "March 20, 2024",
+                description: "Connect with Jain professionals in your industry.",
+                type: "Networking"
+              },
+              {
+                title: "Mentorship Program",
+                date: "Ongoing",
+                description: "Get guidance from experienced Jain business leaders.",
+                type: "Mentorship"
+              }
+            ].map((event, index) => (
+              <div
+                key={index}
+                className="bg-white p-6 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 animate-slide-in hover:-translate-y-1 cursor-pointer"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-accent/10 text-accent mb-4">
+                  {event.type}
+                </span>
+                <h3 className="text-lg font-semibold text-primary mb-2">{event.title}</h3>
+                <p className="text-accent font-medium text-sm mb-2">{event.date}</p>
+                <p className="text-gray-600 text-sm">{event.description}</p>
               </div>
             ))}
           </div>
@@ -162,7 +217,7 @@ const Index = () => {
               ].map((value, index) => (
                 <div 
                   key={index}
-                  className="p-6 rounded-lg bg-white shadow-sm hover:shadow-lg transition-all duration-300 animate-slide-in"
+                  className="p-6 rounded-lg bg-white shadow-sm hover:shadow-lg transition-all duration-300 animate-slide-in hover:-translate-y-1"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <h3 className="text-xl font-semibold text-primary mb-3">{value.title}</h3>
@@ -175,7 +230,7 @@ const Index = () => {
 
         {/* Community Support Section */}
         <section className="mt-32 mb-16">
-          <div className="bg-accent/10 rounded-2xl p-8 md:p-12">
+          <div className="bg-accent/10 rounded-2xl p-8 md:p-12 hover:bg-accent/20 transition-colors">
             <div className="max-w-3xl mx-auto text-center">
               <HandHeart className="w-12 h-12 mx-auto text-accent mb-6" />
               <h2 className="text-3xl font-bold text-primary mb-4">Support Our Community</h2>
@@ -203,12 +258,24 @@ const Index = () => {
                 <DialogDescription>
                   <p className="text-accent font-medium mt-2">{selectedJob.company}</p>
                   <p className="text-gray-500 text-sm">{selectedJob.location}</p>
+                  <div className="mt-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/10 text-accent">
+                      {selectedJob.industry}
+                    </span>
+                  </div>
                 </DialogDescription>
               </DialogHeader>
               <div className="mt-4">
                 <h4 className="font-semibold mb-2">Description</h4>
                 <p className="text-gray-600 mb-4">{selectedJob.description}</p>
                 
+                <h4 className="font-semibold mb-2">Jain-Friendly Policies</h4>
+                <ul className="list-disc list-inside text-gray-600 mb-4">
+                  {selectedJob.jainFriendlyPolicies.map((policy, index) => (
+                    <li key={index}>{policy}</li>
+                  ))}
+                </ul>
+
                 <h4 className="font-semibold mb-2">Requirements</h4>
                 <ul className="list-disc list-inside text-gray-600 mb-6">
                   {selectedJob.requirements.map((req, index) => (
