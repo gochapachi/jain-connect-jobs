@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Heart, Briefcase, Search } from "lucide-react";
+import { Heart, Briefcase, Search, UserCircle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -49,6 +49,17 @@ export const Header = () => {
             
             {user ? (
               <>
+                {user && (
+                  <Link 
+                    to="/profile"
+                    className={`flex items-center space-x-2 text-sm font-medium ${
+                      location.pathname === "/profile" ? "text-accent" : "text-primary hover:text-accent"
+                    } transition-colors`}
+                  >
+                    <UserCircle className="w-4 h-4" />
+                    <span>Profile</span>
+                  </Link>
+                )}
                 <Button asChild variant="default" className="bg-accent hover:bg-accent/90">
                   <Link to="/post-job">Post a Job</Link>
                 </Button>
