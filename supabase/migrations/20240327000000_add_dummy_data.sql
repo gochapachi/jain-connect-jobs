@@ -1,24 +1,11 @@
--- Insert dummy employer data
-INSERT INTO auth.users (
-  id,
-  email,
-  encrypted_password,
-  email_confirmed_at,
-  raw_app_meta_data,
-  raw_user_meta_data,
-  created_at,
-  updated_at,
-  confirmation_token
-) VALUES (
-  '00000000-0000-0000-0000-000000000001',
+
+-- Create test users using Supabase's admin functions
+SELECT supabase_admin.create_user(
   'employer@test.com',
-  '$2a$10$piIrFvbRKyMBRtiRNe3y2OvRDXgkY9BowLMXXuj6qxoeoiQJXTFAK', -- password: test123456
-  NOW(),
-  '{"provider":"email","providers":["email"]}',
-  '{"user_type":"employer"}',
-  NOW(),
-  NOW(),
-  ''
+  'test123456',
+  TRUE, -- email_confirmed
+  jsonb_build_object('user_type', 'employer'),
+  NOW()
 );
 
 INSERT INTO employers (
@@ -30,7 +17,7 @@ INSERT INTO employers (
   phone,
   status
 ) VALUES (
-  '00000000-0000-0000-0000-000000000001',
+  (SELECT id FROM auth.users WHERE email = 'employer@test.com'),
   'Test Company',
   'Technology',
   'John Doe',
@@ -39,27 +26,13 @@ INSERT INTO employers (
   'Active'
 );
 
--- Insert dummy candidate data
-INSERT INTO auth.users (
-  id,
-  email,
-  encrypted_password,
-  email_confirmed_at,
-  raw_app_meta_data,
-  raw_user_meta_data,
-  created_at,
-  updated_at,
-  confirmation_token
-) VALUES (
-  '00000000-0000-0000-0000-000000000002',
+-- Create candidate test user
+SELECT supabase_admin.create_user(
   'candidate@test.com',
-  '$2a$10$piIrFvbRKyMBRtiRNe3y2OvRDXgkY9BowLMXXuj6qxoeoiQJXTFAK', -- password: test123456
-  NOW(),
-  '{"provider":"email","providers":["email"]}',
-  '{"user_type":"candidate"}',
-  NOW(),
-  NOW(),
-  ''
+  'test123456',
+  TRUE, -- email_confirmed
+  jsonb_build_object('user_type', 'candidate'),
+  NOW()
 );
 
 INSERT INTO candidates (
@@ -73,7 +46,7 @@ INSERT INTO candidates (
   current_job_title,
   skills
 ) VALUES (
-  '00000000-0000-0000-0000-000000000002',
+  (SELECT id FROM auth.users WHERE email = 'candidate@test.com'),
   'Test',
   'Candidate',
   'candidate@test.com',
