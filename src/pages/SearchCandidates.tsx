@@ -4,6 +4,7 @@ import { CandidateCard } from "@/components/candidates/CandidateCard";
 import { SearchFilters } from "@/components/candidates/SearchFilters";
 import { FilterDialog } from "@/components/candidates/FilterDialog";
 import { CompareDialog } from "@/components/candidates/CompareDialog";
+import { ScheduleDialog } from "@/components/candidates/ScheduleDialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { mockCandidates } from "@/data/mockCandidates";
@@ -16,7 +17,9 @@ const SearchCandidates = () => {
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [compareDialogOpen, setCompareDialogOpen] = useState(false);
+  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [selectedForComparison, setSelectedForComparison] = useState<string[]>([]);
+  const [selectedForScheduling, setSelectedForScheduling] = useState<Candidate | null>(null);
   const [filters, setFilters] = useState<CandidateFilters>({
     experienceMin: "",
     experienceMax: "",
@@ -169,6 +172,20 @@ const SearchCandidates = () => {
     });
   };
 
+  const handleScheduleInterview = (interviewDetails: {
+    candidateId: string;
+    date: Date;
+    time: string;
+    type: string;
+    notes: string;
+  }) => {
+    toast({
+      title: "Interview Scheduled",
+      description: `Interview scheduled with ${selectedForScheduling?.name} on ${format(interviewDetails.date, "PPP")} at ${interviewDetails.time}`,
+    });
+    setSelectedForScheduling(null);
+  };
+
   const selectedCandidates = candidates.filter(c => selectedForComparison.includes(c.id));
 
   return (
@@ -211,6 +228,15 @@ const SearchCandidates = () => {
             onRemoveCandidate={(id) => handleCompareToggle(id)}
           />
 
+          {selectedForScheduling && (
+            <ScheduleDialog
+              open={scheduleDialogOpen}
+              onOpenChange={setScheduleDialogOpen}
+              candidate={selectedForScheduling}
+              onSchedule={handleScheduleInterview}
+            />
+          )}
+
           <div className="space-y-4">
             {filteredCandidates.map((candidate) => (
               <CandidateCard
@@ -220,6 +246,10 @@ const SearchCandidates = () => {
                 onContact={handleContact}
                 onDownload={handleDownloadResume}
                 onCompare={() => handleCompareToggle(candidate.id)}
+                onSchedule={() => {
+                  setSelectedForScheduling(candidate);
+                  setScheduleDialogOpen(true);
+                }}
                 isSelected={selectedForComparison.includes(candidate.id)}
               />
             ))}
