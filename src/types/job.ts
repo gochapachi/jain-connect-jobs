@@ -8,6 +8,36 @@ export interface FeaturedJob {
   requirements: string[];
   jainFriendlyPolicies: string[];
   industry: string;
+  companyProfile?: {
+    founded: string;
+    size: string;
+    website: string;
+    about: string;
+    benefits: string[];
+    culture: string;
+    values: string[];
+  };
+  hrContact?: {
+    name: string;
+    position: string;
+    email: string;
+  };
+  reviews?: {
+    rating: number;
+    total: number;
+    highlights: Array<{
+      aspect: string;
+      score: number;
+      description: string;
+    }>;
+    testimonials: Array<{
+      rating: number;
+      comment: string;
+      author: string;
+      position: string;
+      date: string;
+    }>;
+  };
 }
 
 export interface Industry {
