@@ -1,19 +1,22 @@
-
 import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { CandidateCard } from "@/components/candidates/CandidateCard";
 import { SearchFilters } from "@/components/candidates/SearchFilters";
 import { FilterDialog } from "@/components/candidates/FilterDialog";
+import { CompareDialog } from "@/components/candidates/CompareDialog";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { mockCandidates } from "@/data/mockCandidates";
 import { Candidate, CandidateFilters, SavedFilter } from "@/types/candidate";
 
 const SearchCandidates = () => {
   const { toast } = useToast();
-  const [candidates, setCandidates] = useState<Candidate[]>(mockCandidates); // Fixed: Added setCandidates
+  const [candidates, setCandidates] = useState<Candidate[]>(mockCandidates);
   const [searchQuery, setSearchQuery] = useState("");
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
+  const [compareDialogOpen, setCompareDialogOpen] = useState(false);
+  const [selectedForComparison, setSelectedForComparison] = useState<string[]>([]);
   const [filters, setFilters] = useState<CandidateFilters>({
     experienceMin: "",
     experienceMax: "",
@@ -124,6 +127,23 @@ const SearchCandidates = () => {
     });
   };
 
+  const handleCompareToggle = (candidateId: string) => {
+    setSelectedForComparison(prev => {
+      if (prev.includes(candidateId)) {
+        return prev.filter(id => id !== candidateId);
+      }
+      if (prev.length >= 3) {
+        toast({
+          title: "Maximum Candidates Reached",
+          description: "You can compare up to 3 candidates at a time.",
+          variant: "destructive",
+        });
+        return prev;
+      }
+      return [...prev, candidateId];
+    });
+  };
+
   const handleSaveFilter = () => {
     const filterName = prompt("Enter a name for this filter:");
     if (filterName) {
@@ -149,26 +169,46 @@ const SearchCandidates = () => {
     });
   };
 
+  const selectedCandidates = candidates.filter(c => selectedForComparison.includes(c.id));
+
   return (
     <div className="min-h-screen bg-muted">
       <Header />
       
       <main className="container mx-auto px-4 pt-32 pb-16">
         <div className="max-w-7xl mx-auto">
-          <SearchFilters
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            onFilterClick={() => setFilterDialogOpen(true)}
-            onSaveFilter={handleSaveFilter}
-            savedFilters={savedFilters}
-            onFilterSelect={setFilters}
-          />
+          <div className="flex justify-between items-center mb-4">
+            <SearchFilters
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              onFilterClick={() => setFilterDialogOpen(true)}
+              onSaveFilter={handleSaveFilter}
+              savedFilters={savedFilters}
+              onFilterSelect={setFilters}
+            />
+            
+            {selectedForComparison.length > 0 && (
+              <Button
+                onClick={() => setCompareDialogOpen(true)}
+                className="ml-4"
+              >
+                Compare Selected ({selectedForComparison.length})
+              </Button>
+            )}
+          </div>
 
-          <FilterDialog
+          <FilterDialog 
             open={filterDialogOpen}
             onOpenChange={setFilterDialogOpen}
             initialFilters={filters}
             onApplyFilters={setFilters}
+          />
+
+          <CompareDialog
+            open={compareDialogOpen}
+            onOpenChange={setCompareDialogOpen}
+            candidates={selectedCandidates}
+            onRemoveCandidate={(id) => handleCompareToggle(id)}
           />
 
           <div className="space-y-4">
@@ -179,6 +219,8 @@ const SearchCandidates = () => {
                 onShortlist={handleShortlist}
                 onContact={handleContact}
                 onDownload={handleDownloadResume}
+                onCompare={() => handleCompareToggle(candidate.id)}
+                isSelected={selectedForComparison.includes(candidate.id)}
               />
             ))}
           </div>

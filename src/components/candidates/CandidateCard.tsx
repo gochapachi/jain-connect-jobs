@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Heart, Mail, Phone, MessageSquare, Download } from "lucide-react";
+import { Heart, Mail, Phone, MessageSquare, Download, Users } from "lucide-react";
 import { Candidate } from "@/types/candidate";
 
 interface CandidateCardProps {
@@ -9,13 +9,17 @@ interface CandidateCardProps {
   onShortlist: (id: string) => void;
   onContact: (type: 'email' | 'sms' | 'whatsapp', candidate: Candidate) => void;
   onDownload: (candidate: Candidate) => void;
+  onCompare: () => void;
+  isSelected: boolean;
 }
 
 export const CandidateCard = ({
   candidate,
   onShortlist,
   onContact,
-  onDownload
+  onDownload,
+  onCompare,
+  isSelected
 }: CandidateCardProps) => {
   return (
     <Card className="p-6">
@@ -41,6 +45,14 @@ export const CandidateCard = ({
         </div>
         
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => onCompare()}
+            className={isSelected ? "bg-accent text-white hover:bg-accent/90" : ""}
+          >
+            <Users className="h-4 w-4" />
+          </Button>
           <Button
             variant="outline"
             size="icon"
