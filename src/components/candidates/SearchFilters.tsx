@@ -2,14 +2,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Save } from "lucide-react";
+import { CandidateFilters, SavedFilter } from "@/types/candidate";
 
 interface SearchFiltersProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onFilterClick: () => void;
   onSaveFilter: () => void;
-  savedFilters: Array<{ name: string; filters: any }>;
-  onFilterSelect: (filters: any) => void;
+  savedFilters: SavedFilter[];
+  onFilterSelect: (filters: CandidateFilters) => void;
 }
 
 export const SearchFilters = ({
@@ -53,7 +54,6 @@ export const SearchFilters = ({
         </Button>
       </div>
 
-      {/* Saved Filters */}
       {savedFilters.length > 0 && (
         <div className="flex gap-2 flex-wrap">
           {savedFilters.map((filter, index) => (

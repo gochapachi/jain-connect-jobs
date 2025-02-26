@@ -2,23 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heart, Mail, Phone, MessageSquare, Download } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-
-interface Candidate {
-  id: string;
-  name: string;
-  title: string;
-  experience: string;
-  location: string;
-  skills: string[];
-  education: string;
-  lastActive: string;
-  email: string;
-  phone: string;
-  expectedSalary: string;
-  currentCompany: string;
-  isShortlisted: boolean;
-}
+import { Candidate } from "@/types/candidate";
 
 interface CandidateCardProps {
   candidate: Candidate;
