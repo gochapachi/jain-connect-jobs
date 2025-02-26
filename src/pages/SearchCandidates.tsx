@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { CandidateCard } from "@/components/candidates/CandidateCard";
@@ -9,7 +10,7 @@ import { Candidate, CandidateFilters, SavedFilter } from "@/types/candidate";
 
 const SearchCandidates = () => {
   const { toast } = useToast();
-  const [candidates] = useState<Candidate[]>(mockCandidates);
+  const [candidates, setCandidates] = useState<Candidate[]>(mockCandidates); // Fixed: Added setCandidates
   const [searchQuery, setSearchQuery] = useState("");
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
