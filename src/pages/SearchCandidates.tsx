@@ -1,17 +1,18 @@
-
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { CandidateCard } from "@/components/candidates/CandidateCard";
 import { SearchFilters } from "@/components/candidates/SearchFilters";
+import { FilterDialog } from "@/components/candidates/FilterDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { mockCandidates } from "@/data/mockCandidates";
 import { Candidate, CandidateFilters, SavedFilter } from "@/types/candidate";
 
 const SearchCandidates = () => {
   const { toast } = useToast();
-  const [candidates, setCandidates] = useState<Candidate[]>(mockCandidates);
+  const [candidates] = useState<Candidate[]>(mockCandidates);
   const [searchQuery, setSearchQuery] = useState("");
   const [savedFilters, setSavedFilters] = useState<SavedFilter[]>([]);
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [filters, setFilters] = useState<CandidateFilters>({
     experienceMin: "",
     experienceMax: "",
@@ -24,6 +25,89 @@ const SearchCandidates = () => {
     },
     lastActive: ""
   });
+
+  const processSearchQuery = (query: string) => {
+    const terms = query.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+    return terms.map(term => {
+      if (term.startsWith('"') && term.endsWith('"')) {
+        return { type: 'exact', value: term.slice(1, -1) };
+      }
+      if (term.startsWith('-')) {
+        return { type: 'exclude', value: term.slice(1) };
+      }
+      if (term.toUpperCase() === 'OR' || term.toUpperCase() === 'AND') {
+        return { type: 'operator', value: term.toUpperCase() };
+      }
+      return { type: 'include', value: term };
+    });
+  };
+
+  const filteredCandidates = useMemo(() => {
+    return candidates.filter(candidate => {
+      if (filters.experienceMin && parseInt(candidate.experience) < parseInt(filters.experienceMin)) {
+        return false;
+      }
+      if (filters.experienceMax && parseInt(candidate.experience) > parseInt(filters.experienceMax)) {
+        return false;
+      }
+      if (filters.locations.length && !filters.locations.includes(candidate.location)) {
+        return false;
+      }
+      if (filters.skills.length && !filters.skills.some(skill => candidate.skills.includes(skill))) {
+        return false;
+      }
+      if (filters.education.length && !filters.education.includes(candidate.education)) {
+        return false;
+      }
+
+      if (searchQuery) {
+        const searchTerms = processSearchQuery(searchQuery);
+        let matches = true;
+        let currentOperator = 'AND';
+
+        for (let i = 0; i < searchTerms.length; i++) {
+          const term = searchTerms[i];
+          const nextTerm = searchTerms[i + 1];
+
+          if (term.type === 'operator') {
+            currentOperator = term.value;
+            continue;
+          }
+
+          const searchableText = `
+            ${candidate.name.toLowerCase()} 
+            ${candidate.title.toLowerCase()} 
+            ${candidate.skills.join(' ').toLowerCase()}
+            ${candidate.location.toLowerCase()}
+          `;
+
+          let termMatches = false;
+
+          switch (term.type) {
+            case 'exact':
+              termMatches = searchableText.includes(term.value.toLowerCase());
+              break;
+            case 'exclude':
+              termMatches = !searchableText.includes(term.value.toLowerCase());
+              break;
+            case 'include':
+              termMatches = searchableText.includes(term.value.toLowerCase());
+              break;
+          }
+
+          if (currentOperator === 'AND') {
+            matches = matches && termMatches;
+          } else if (currentOperator === 'OR') {
+            matches = matches || termMatches;
+          }
+        }
+
+        return matches;
+      }
+
+      return true;
+    });
+  }, [candidates, filters, searchQuery]);
 
   const handleShortlist = (candidateId: string) => {
     setCandidates(prev => 
@@ -73,14 +157,21 @@ const SearchCandidates = () => {
           <SearchFilters
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
-            onFilterClick={() => {/* TODO: Implement filter dialog */}}
+            onFilterClick={() => setFilterDialogOpen(true)}
             onSaveFilter={handleSaveFilter}
             savedFilters={savedFilters}
             onFilterSelect={setFilters}
           />
 
+          <FilterDialog
+            open={filterDialogOpen}
+            onOpenChange={setFilterDialogOpen}
+            initialFilters={filters}
+            onApplyFilters={setFilters}
+          />
+
           <div className="space-y-4">
-            {candidates.map((candidate) => (
+            {filteredCandidates.map((candidate) => (
               <CandidateCard
                 key={candidate.id}
                 candidate={candidate}
