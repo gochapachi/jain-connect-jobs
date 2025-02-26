@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Heart, Briefcase } from "lucide-react";
+import { Heart, Briefcase, Search } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 export const Header = () => {
@@ -23,6 +23,16 @@ export const Header = () => {
             >
               <Briefcase className="w-4 h-4" />
               <span>Jobs</span>
+            </Link>
+            
+            <Link 
+              to="/search-candidates"
+              className={`flex items-center space-x-2 text-sm font-medium ${
+                location.pathname === "/search-candidates" ? "text-accent" : "text-primary hover:text-accent"
+              } transition-colors`}
+            >
+              <Search className="w-4 h-4" />
+              <span>Search Candidates</span>
             </Link>
             
             <Link 

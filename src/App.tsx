@@ -6,6 +6,7 @@ import JobDetails from "@/pages/JobDetails";
 import PostJob from "@/pages/PostJob";
 import Donate from "@/pages/Donate";
 import NotFound from "@/pages/NotFound";
+import SearchCandidates from "@/pages/SearchCandidates";
 import "./App.css";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/jobs/:id" element={<JobDetails />} />
         <Route path="/post-job" element={<PostJob />} />
         <Route path="/donate" element={<Donate />} />
+        <Route path="/search-candidates" element={<SearchCandidates />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
