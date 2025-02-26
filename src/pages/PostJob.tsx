@@ -96,13 +96,15 @@ const PostJob = () => {
     const { name, value } = e.target;
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof JobFormData],
-          [child]: value
-        }
-      }));
+      if (parent === 'salary') {
+        setFormData(prev => ({
+          ...prev,
+          salary: {
+            ...prev.salary,
+            [child]: value
+          }
+        }));
+      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
