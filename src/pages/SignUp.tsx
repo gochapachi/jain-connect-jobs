@@ -12,6 +12,9 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [userType, setUserType] = useState<'candidate' | 'employer'>('candidate');
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
@@ -23,7 +26,14 @@ export default function SignUp() {
     setLoading(true);
     
     try {
-      await signUp(email, password, userType);
+      await signUp(
+        email, 
+        password, 
+        userType, 
+        firstName, 
+        lastName, 
+        userType === 'employer' ? companyName : undefined
+      );
       toast({
         title: "Success",
         description: "Please check your email to verify your account"
@@ -62,6 +72,39 @@ export default function SignUp() {
               </div>
             </RadioGroup>
           </div>
+          
+          {userType === 'employer' ? (
+            <div className="space-y-2">
+              <Label htmlFor="companyName">Company Name</Label>
+              <Input
+                id="companyName"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                required
+              />
+            </div>
+          ) : (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
+              </div>
+            </>
+          )}
           
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
