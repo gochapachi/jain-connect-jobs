@@ -20,13 +20,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("Checking initial session");
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session:", session);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", { event: _event, session });
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -43,6 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     lastName?: string,
     companyName?: string
   ) => {
+    console.log("Starting signup process:", { email, userType });
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -53,7 +57,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
-    if (authError) throw authError;
+    if (authError) {
+      console.error("Signup auth error:", authError);
+      throw authError;
+    }
+
+    console.log("Auth signup successful:", authData);
 
     if (authData.user) {
       if (userType === 'candidate') {
@@ -67,7 +76,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             status: 'Active'
           }
         ]);
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.error("Candidate profile creation error:", profileError);
+          throw profileError;
+        }
       } else {
         const { error: profileError } = await supabase.from('employers').insert([
           {
@@ -80,22 +92,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             status: 'Active'
           }
         ]);
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.error("Employer profile creation error:", profileError);
+          throw profileError;
+        }
       }
     }
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    console.log("Attempting to sign in:", { email });
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
-    if (error) throw error;
+    
+    if (error) {
+      console.error("Sign in error:", error);
+      throw error;
+    }
+    
+    console.log("Sign in successful:", data);
   };
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    if (error) {
+      console.error("Sign out error:", error);
+      throw error;
+    }
+    console.log("Sign out successful");
   };
 
   return (

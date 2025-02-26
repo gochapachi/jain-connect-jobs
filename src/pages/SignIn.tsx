@@ -18,11 +18,14 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    console.log("Attempting to sign in with:", { email });
     
     try {
       await signIn(email, password);
+      console.log("Sign in successful");
       navigate("/");
     } catch (error) {
+      console.error("Sign in error:", error);
       toast({
         variant: "destructive",
         title: "Error",
