@@ -1,4 +1,3 @@
-
 -- Insert dummy employer data
 INSERT INTO auth.users (
   id,
