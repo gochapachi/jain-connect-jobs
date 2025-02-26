@@ -7,7 +7,6 @@ import { JobFilters } from "@/types/filters";
 import { JobSearch } from "@/components/jobs/JobSearch";
 import { JobFiltersDialog } from "@/components/jobs/JobFiltersDialog";
 import { JobCard } from "@/components/jobs/JobCard";
-import { JobDetailsDialog } from "@/components/home/JobDetailsDialog";
 import { FeaturedJob } from "@/types/job";
 
 const Jobs = () => {
@@ -19,8 +18,6 @@ const Jobs = () => {
     experienceLevels: []
   });
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<FeaturedJob | null>(null);
-  const [showJobDetails, setShowJobDetails] = useState(false);
 
   const handleFiltersChange = (key: keyof JobFilters, value: string[]) => {
     setFilters(prev => ({ ...prev, [key]: value }));
@@ -77,10 +74,6 @@ const Jobs = () => {
                   key={job.id}
                   job={job}
                   index={index}
-                  onSelect={(job) => {
-                    setSelectedJob(job);
-                    setShowJobDetails(true);
-                  }}
                 />
               ))}
             </div>
@@ -94,12 +87,6 @@ const Jobs = () => {
         filters={filters}
         onFiltersChange={handleFiltersChange}
         onReset={resetFilters}
-      />
-
-      <JobDetailsDialog 
-        job={selectedJob}
-        open={showJobDetails}
-        onOpenChange={setShowJobDetails}
       />
     </div>
   );

@@ -3,19 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MapPin, Building2, CheckCircle2 } from "lucide-react";
 import { FeaturedJob } from "@/types/job";
+import { useNavigate } from "react-router-dom";
 
 interface JobCardProps {
   job: FeaturedJob;
-  onSelect: (job: FeaturedJob) => void;
   index: number;
 }
 
-export const JobCard = ({ job, onSelect, index }: JobCardProps) => {
+export const JobCard = ({ job, index }: JobCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <Card 
       className="p-6 animate-slide-in hover:shadow-md transition-all cursor-pointer"
       style={{ animationDelay: `${index * 100}ms` }}
-      onClick={() => onSelect(job)}
+      onClick={() => navigate(`/jobs/${job.id}`)}
     >
       <div className="flex items-start justify-between">
         <div>
@@ -42,8 +44,14 @@ export const JobCard = ({ job, onSelect, index }: JobCardProps) => {
             </div>
           </div>
         </div>
-        <Button className="bg-accent hover:bg-accent/90">
-          Apply Now
+        <Button 
+          className="bg-accent hover:bg-accent/90"
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(`/jobs/${job.id}`, '_blank');
+          }}
+        >
+          View Details
         </Button>
       </div>
     </Card>
