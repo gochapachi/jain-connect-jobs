@@ -2,9 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { Heart, Briefcase, Search } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
   const location = useLocation();
+  const { user, signOut } = useAuth();
   
   return (
     <header className="w-full bg-white border-b border-gray-100 fixed top-0 z-50">
@@ -45,9 +47,28 @@ export const Header = () => {
               <span>Donate</span>
             </Link>
             
-            <Button asChild variant="default" className="bg-accent hover:bg-accent/90">
-              <Link to="/post-job">Post a Job</Link>
-            </Button>
+            {user ? (
+              <>
+                <Button asChild variant="default" className="bg-accent hover:bg-accent/90">
+                  <Link to="/post-job">Post a Job</Link>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => signOut()}
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="outline">
+                  <Link to="/signin">Sign In</Link>
+                </Button>
+                <Button asChild variant="default" className="bg-accent hover:bg-accent/90">
+                  <Link to="/signup">Sign Up</Link>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
       </div>
