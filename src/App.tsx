@@ -11,6 +11,7 @@ import SearchCandidates from "@/pages/SearchCandidates";
 import Donate from "@/pages/Donate";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
+import Profile from "@/pages/Profile";
 
 function App() {
   return (
@@ -35,6 +36,14 @@ function App() {
                 <SearchCandidates />
               </ProtectedRoute>
             } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
           />
           <Route path="/donate" element={<Donate />} />
           <Route path="/signin" element={<SignIn />} />
