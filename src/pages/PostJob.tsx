@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/Header";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,54 +7,81 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
+interface JobFormData {
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  department: string;
+  experienceLevel: string;
+  salary: {
+    min: string;
+    max: string;
+    currency: string;
+  };
+  description: string;
+  responsibilities: string;
+  requirements: string;
+  preferredSkills: string;
+  companyDescription: string;
+  companySize: string;
+  industry: string;
+  website: string;
+  benefits: string;
+  workSchedule: string;
+  remotePolicy: string;
+  jainFriendlyPolicies: {
+    vegetarianCafeteria: boolean;
+    meditationRoom: boolean;
+    flexibleHolidays: boolean;
+    culturalAwareness: boolean;
+  };
+  culturalInitiatives: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  applicationDeadline: string;
+}
+
+const initialFormData: JobFormData = {
+  title: "",
+  company: "",
+  location: "",
+  type: "",
+  department: "",
+  experienceLevel: "",
+  salary: {
+    min: "",
+    max: "",
+    currency: "USD",
+  },
+  description: "",
+  responsibilities: "",
+  requirements: "",
+  preferredSkills: "",
+  companyDescription: "",
+  companySize: "",
+  industry: "",
+  website: "",
+  benefits: "",
+  workSchedule: "",
+  remotePolicy: "",
+  jainFriendlyPolicies: {
+    vegetarianCafeteria: false,
+    meditationRoom: false,
+    flexibleHolidays: false,
+    culturalAwareness: false,
+  },
+  culturalInitiatives: "",
+  contactName: "",
+  contactEmail: "",
+  contactPhone: "",
+  applicationDeadline: "",
+};
+
 const PostJob = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    // Basic Job Details
-    title: "",
-    company: "",
-    location: "",
-    type: "",
-    department: "",
-    experienceLevel: "",
-    salary: {
-      min: "",
-      max: "",
-      currency: "USD",
-    },
-    
-    // Job Description
-    description: "",
-    responsibilities: "",
-    requirements: "",
-    preferredSkills: "",
-    
-    // Company Details
-    companyDescription: "",
-    companySize: "",
-    industry: "",
-    website: "",
-    
-    // Benefits & Culture
-    benefits: "",
-    workSchedule: "",
-    remotePolicy: "",
-    
-    // Jain-Specific Details
-    jainFriendlyPolicies: {
-      vegetarianCafeteria: false,
-      meditationRoom: false,
-      flexibleHolidays: false,
-      culturalAwareness: false,
-    },
-    culturalInitiatives: "",
-    
-    // Contact Information
-    contactName: "",
-    contactEmail: "",
-    contactPhone: "",
-    applicationDeadline: "",
-  });
+  const [formData, setFormData] = useState<JobFormData>(initialFormData);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,42 +89,7 @@ const PostJob = () => {
       title: "Job Posted Successfully",
       description: "Your job listing has been submitted and will be reviewed shortly.",
     });
-    // Reset form
-    setFormData({
-      title: "",
-      company: "",
-      location: "",
-      type: "",
-      department: "",
-      experienceLevel: "",
-      salary: {
-        min: "",
-        max: "",
-        currency: "USD",
-      },
-      description: "",
-      responsibilities: "",
-      requirements: "",
-      preferredSkills: "",
-      companyDescription: "",
-      companySize: "",
-      industry: "",
-      website: "",
-      benefits: "",
-      workSchedule: "",
-      remotePolicy: "",
-      jainFriendlyPolicies: {
-        vegetarianCafeteria: false,
-        meditationRoom: false,
-        flexibleHolidays: false,
-        culturalAwareness: false,
-      },
-      culturalInitiatives: "",
-      contactName: "",
-      contactEmail: "",
-      contactPhone: "",
-      applicationDeadline: "",
-    });
+    setFormData(initialFormData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -108,7 +99,7 @@ const PostJob = () => {
       setFormData(prev => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof typeof prev],
+          ...prev[parent as keyof JobFormData],
           [child]: value
         }
       }));
@@ -117,12 +108,12 @@ const PostJob = () => {
     }
   };
 
-  const handleCheckboxChange = (name: string) => {
+  const handleCheckboxChange = (name: keyof JobFormData['jainFriendlyPolicies']) => {
     setFormData(prev => ({
       ...prev,
       jainFriendlyPolicies: {
         ...prev.jainFriendlyPolicies,
-        [name]: !prev.jainFriendlyPolicies[name as keyof typeof prev.jainFriendlyPolicies]
+        [name]: !prev.jainFriendlyPolicies[name]
       }
     }));
   };
